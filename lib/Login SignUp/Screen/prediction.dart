@@ -1,92 +1,29 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Prediction',
-      home: PredictionScreen(age: '', bloodPressure: '',),
-    );
-  }
-}
-
-
-
-
 class PredictionScreen extends StatelessWidget {
-  final String age;
-  final String bloodPressure;
-  // Add more variables as needed
+  final dynamic predictionResult; // Define a field to hold prediction result
 
-  PredictionScreen({
-    required this.age,
-    required this.bloodPressure,
-    // Add more variables as needed
-  });
+  PredictionScreen({Key? key, required this.predictionResult}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Implement prediction logic here using received data
-    // Example:
-    // String predictionResult = makePrediction(age, bloodPressure);
-    
-    // Simulated prediction result
-    String predictionResult = 'Chronic Kidney Disease Detected';
-    String probability = '95%';
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text(
-          'Prediction Result',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text('Prediction Result'),
       ),
-      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Center(
         child: Column(
-          //mainAxisAlignment: MainAxisAlignment.center,
-          
-          children: [
-            Text(''),
-
-            SizedBox(height: 100.0),
-            
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
             Text(
-              
-              'Your Status: $predictionResult',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 22.0,
-                color: Colors.black
-                
-              ),
-              textAlign: TextAlign.center
+              'Prediction Result:',
+              style: TextStyle(fontSize: 20),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 10),
             Text(
-              'Probability of kidney diseae: $probability',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 22.0,
-                color: Colors.black
-              ),
-              textAlign: TextAlign.center
+              '$predictionResult', // Display prediction result here
+              style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 16.0),
-            Container(
-            width: double.infinity, 
-            margin:EdgeInsets.only(top: 90, bottom: 50, left: 70, right: 70),
-            child:Text("Please see a medical practitioner for further diagnosis and treatment.",
-          style: TextStyle(
-            fontSize: 24,
-            color: Colors.black,
-            fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-          ),),
           ],
         ),
       ),

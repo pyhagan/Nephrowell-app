@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
 import 'prediction.dart';
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CKDAssessment',
-      
-      home: CKDAssessmentScreen(),
-    );
-  }
-}
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class CKDAssessmentScreen extends StatefulWidget {
   @override
@@ -23,10 +14,6 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
   TextEditingController _sgController = TextEditingController();
   TextEditingController _albuminController = TextEditingController();
   TextEditingController _suController = TextEditingController();
-  String _selectedRedBloodCells = '';
-  String _selectedPusCell = '';
-  String _selectedPusCellClumps = '';
-  String _selectedBacteria = '';
   TextEditingController _bgrController = TextEditingController();
   TextEditingController _bloodUreaController = TextEditingController();
   TextEditingController _serumCreatinineController = TextEditingController();
@@ -36,14 +23,69 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
   TextEditingController _packedCellVolumeController = TextEditingController();
   TextEditingController _whiteBloodCellCountController = TextEditingController();
   TextEditingController _redBloodCellCountController = TextEditingController();
-  
 
+  String _selectedRedBloodCells = '';
+  String _selectedPusCell = '';
+  String _selectedPusCellClumps = '';
+  String _selectedBacteria = '';
   String _selectedHypertension = '';
   String _selectedDiabetes = '';
   String _selectedCoronaryArteryDisease = '';
   String _selectedPedalEdema = '';
   String _selectedAnemia = '';
- 
+
+  Future<void> _assessStatus() async {
+    var data = {
+      'age': _ageController.text,
+      'diastolic bp': _bloodPressureController.text,
+      'sg': _sgController.text,
+      'al': _albuminController.text,
+      'su': _suController.text,
+      'bgr': _bgrController.text,
+      'bu': _bloodUreaController.text,
+      'sc': _serumCreatinineController.text,
+      'sod': _sodiumController.text,
+      'pot': _potassiumController.text,
+      'hemo': _hemoglobinController.text,
+      'pcv': _packedCellVolumeController.text,
+      'wc': _whiteBloodCellCountController.text,
+      'rc': _redBloodCellCountController.text,
+      'rbc': _selectedRedBloodCells,
+      'pc': _selectedPusCell,
+      'pcc': _selectedPusCellClumps,
+      'ba': _selectedBacteria,
+      'htn': _selectedHypertension,
+      'dm': _selectedDiabetes,
+      'cad': _selectedCoronaryArteryDisease,
+      'pe': _selectedPedalEdema,
+      'ane': _selectedAnemia,
+    };
+    var body = json.encode(data);
+
+    var url = Uri.parse('https://flask-traditional-api.onrender.com/predict'); // Replace with your Flask API endpoint
+    try {
+      var response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        var predictionResult = json.decode(response.body);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PredictionScreen(predictionResult: predictionResult)),
+        );
+      } else {
+        print('Error ${response.statusCode}: ${response.reasonPhrase}');
+        // Optionally, show an error dialog or message to the user
+      }
+    } catch (e) {
+      print('Error: $e');
+      // Handle other exceptions if necessary
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,10 +95,8 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
           'Medical Information',
           style: TextStyle(color: Colors.white),
         ),
-      
       ),
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
-      
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -82,6 +122,7 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
                 ),
               ),
                SizedBox(height: 16.0),
+
                TextFormField(
                 controller: _sgController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -107,6 +148,100 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
                   labelText: 'Sugar',
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 16.0),
+
+              TextFormField(
+                controller: _bgrController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Blood Glucose Random',
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 16.0),
+
+              
+              TextFormField(
+                controller: _bloodUreaController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'Blood Urea',
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 16.0),
+
+
+
+              TextFormField(
+                controller: _serumCreatinineController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'Serum Creatinine',
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 16.0),
+
+              TextFormField(
+                controller: _sodiumController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'Sodium',
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 16.0),
+
+              TextFormField(
+                controller: _potassiumController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'Potassium',
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 16.0),
+
+              TextFormField(
+                controller: _hemoglobinController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'Hemoglobin',
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 16.0),
+
+
+              TextFormField(
+                controller: _packedCellVolumeController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'Packed Cell Volume',
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 16.0),
+
+              TextFormField(
+                controller: _whiteBloodCellCountController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'White Blood Cell Count',
+                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 16.0),
+
+              TextFormField(
+                controller: _redBloodCellCountController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: 'Red Blood Cell Count',
                   labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                 ),
               ),
@@ -227,99 +362,6 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
                 ),
               ),
                SizedBox(height: 16.0),
-
-               TextFormField(
-                controller: _bgrController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Blood Glucose Random',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              TextFormField(
-                controller: _bloodUreaController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: 'Blood Urea',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-
-
-              TextFormField(
-                controller: _serumCreatinineController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: 'Serum Creatinine',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              TextFormField(
-                controller: _sodiumController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: 'Sodium',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              TextFormField(
-                controller: _potassiumController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: 'Potassium',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              TextFormField(
-                controller: _hemoglobinController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: 'Hemoglobin',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-
-              TextFormField(
-                controller: _packedCellVolumeController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: 'Packed Cell Volume',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              TextFormField(
-                controller: _whiteBloodCellCountController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: 'White Blood Cell Count',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              TextFormField(
-                controller: _redBloodCellCountController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: 'Red Blood Cell Count',
-                  labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),
-              SizedBox(height: 16.0),
 
           Text(
                 'NB:For Hypertension only! Select Yes if your diastolic bp is 90 or more. Otherwise, select No ',
@@ -477,29 +519,49 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
               ),
                SizedBox(height: 16.0),
 
-              
-              
               ElevatedButton(
                 style: ButtonStyle(
-                    foregroundColor:
-                        MaterialStatePropertyAll(Colors.white),
-                    backgroundColor: MaterialStatePropertyAll(
-                        const Color.fromARGB(255, 167, 60, 53))),
-                onPressed: () {
-                  
-              Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PredictionScreen (age: '', bloodPressure: '',)),
-            );
-            
-                  // Implement CKD status check functionality here
-                  // You can access entered data using controllers and boolean variab les
-                  // Perform CKD assessment based on entered data
-                },
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                  backgroundColor: MaterialStateProperty.all(const Color.fromARGB(255, 167, 60, 53)),
+                ),
+                onPressed: _assessStatus,
                 child: Text('Assess Status'),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class PredictionScreen extends StatelessWidget {
+  final dynamic predictionResult;
+
+  PredictionScreen({Key? key, required this.predictionResult}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Prediction Result'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Prediction Result:',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            // Display prediction results here
+            Text(
+              '$predictionResult',
+              style: TextStyle(fontSize: 18),
+            ),
+          ],
         ),
       ),
     );
