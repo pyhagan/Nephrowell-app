@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'prediction.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -34,7 +35,25 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
   String _selectedPedalEdema = '';
   String _selectedAnemia = '';
 
+  int _encodeValue(String value) {
+    switch (value) {
+      case 'Yes':
+      case 'Present':
+      case 'Abnormal':
+        return 1;
+      case 'No':
+      case 'Not Present':
+      case 'Normal':
+      default:
+        return 0;
+    }
+  }
+
   Future<void> _assessStatus() async {
+    if (!_validateInputs()) {
+      return;
+    }
+
     var data = {
       'age': _ageController.text,
       'diastolic bp': _bloodPressureController.text,
@@ -50,17 +69,18 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
       'pcv': _packedCellVolumeController.text,
       'wc': _whiteBloodCellCountController.text,
       'rc': _redBloodCellCountController.text,
-      'rbc': _selectedRedBloodCells,
-      'pc': _selectedPusCell,
-      'pcc': _selectedPusCellClumps,
-      'ba': _selectedBacteria,
-      'htn': _selectedHypertension,
-      'dm': _selectedDiabetes,
-      'cad': _selectedCoronaryArteryDisease,
-      'pe': _selectedPedalEdema,
-      'ane': _selectedAnemia,
+      'rbc': _encodeValue(_selectedRedBloodCells),
+      'pc': _encodeValue(_selectedPusCell),
+      'pcc': _encodeValue(_selectedPusCellClumps),
+      'ba': _encodeValue(_selectedBacteria),
+      'htn': _encodeValue(_selectedHypertension),
+      'dm': _encodeValue(_selectedDiabetes),
+      'cad': _encodeValue(_selectedCoronaryArteryDisease),
+      'pe': _encodeValue(_selectedPedalEdema),
+      'ane': _encodeValue(_selectedAnemia),
     };
     var body = json.encode(data);
+    print('Data being sent to the API: $body');
 
     var url = Uri.parse('https://flask-traditional-api.onrender.com/predict'); // Replace with your Flask API endpoint
     try {
@@ -84,6 +104,66 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
       print('Error: $e');
       // Handle other exceptions if necessary
     }
+  }
+
+  bool _validateInputs() {
+    if (_ageController.text.isEmpty ||
+        _bloodPressureController.text.isEmpty ||
+        _sgController.text.isEmpty ||
+        _albuminController.text.isEmpty ||
+        _suController.text.isEmpty ||
+        _bgrController.text.isEmpty ||
+        _bloodUreaController.text.isEmpty ||
+        _serumCreatinineController.text.isEmpty ||
+        _sodiumController.text.isEmpty ||
+        _potassiumController.text.isEmpty ||
+        _hemoglobinController.text.isEmpty ||
+        _packedCellVolumeController.text.isEmpty ||
+        _whiteBloodCellCountController.text.isEmpty ||
+        _redBloodCellCountController.text.isEmpty) {
+      _showErrorDialog('Please fill in all fields');
+      return false;
+    }
+
+    if (double.tryParse(_ageController.text) == null ||
+        double.tryParse(_bloodPressureController.text) == null ||
+        double.tryParse(_sgController.text) == null ||
+        double.tryParse(_albuminController.text) == null ||
+        double.tryParse(_suController.text) == null ||
+        double.tryParse(_bgrController.text) == null ||
+        double.tryParse(_bloodUreaController.text) == null ||
+        double.tryParse(_serumCreatinineController.text) == null ||
+        double.tryParse(_sodiumController.text) == null ||
+        double.tryParse(_potassiumController.text) == null ||
+        double.tryParse(_hemoglobinController.text) == null ||
+        double.tryParse(_packedCellVolumeController.text) == null ||
+        double.tryParse(_whiteBloodCellCountController.text) == null ||
+        double.tryParse(_redBloodCellCountController.text) == null) {
+      _showErrorDialog('Please enter a valid number or "." where necessary');
+      return false;
+    }
+
+    return true;
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -547,20 +627,21 @@ class PredictionScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Prediction Result'),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Prediction Result:',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
-            // Display prediction results here
+            SizedBox(height: 16.0),
             Text(
-              '$predictionResult',
+              predictionResult.toString(),
               style: TextStyle(fontSize: 18),
             ),
+            SizedBox(height: 16.0),
           ],
         ),
       ),
