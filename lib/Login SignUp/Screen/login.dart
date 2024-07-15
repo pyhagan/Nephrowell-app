@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         LayoutBuilder(
                           builder: (context, constraints) {
-                            double maxWidth = constraints.maxWidth * 0.6;
+                            double maxWidth = constraints.maxWidth * 0.8;
                             return ConstrainedBox(
                               constraints: BoxConstraints(maxWidth: maxWidth),
                               child: TextfieldInpute(
@@ -172,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 10),
                         LayoutBuilder(
                           builder: (context, constraints) {
-                            double maxWidth = constraints.maxWidth * 0.6;
+                            double maxWidth = constraints.maxWidth * 0.8;
                             return ConstrainedBox(
                               constraints: BoxConstraints(maxWidth: maxWidth),
                               child: TextfieldInpute(
@@ -256,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 10),
                         LayoutBuilder(
                           builder: (context, constraints) {
-                            double maxWidth = constraints.maxWidth * 0.4;
+                            double maxWidth = constraints.maxWidth * 0.6;
                             return ConstrainedBox(
                               constraints: BoxConstraints(maxWidth: maxWidth),
                               child: MyButton(

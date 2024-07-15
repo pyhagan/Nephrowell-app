@@ -208,7 +208,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       children: [
                         LayoutBuilder(
                           builder: (context, constraints) {
-                            double maxWidth = constraints.maxWidth * 0.6;
+                            double maxWidth = constraints.maxWidth * 0.8;
                             return ConstrainedBox(
                               constraints: BoxConstraints(maxWidth: maxWidth),
                               child: TextfieldInpute(
@@ -224,7 +224,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         const SizedBox(height: 10),
                         LayoutBuilder(
                           builder: (context, constraints) {
-                            double maxWidth = constraints.maxWidth * 0.6;
+                            double maxWidth = constraints.maxWidth * 0.8;
                             return ConstrainedBox(
                               constraints: BoxConstraints(maxWidth: maxWidth),
                               child: TextfieldInpute(
@@ -240,7 +240,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         const SizedBox(height: 10),
                         LayoutBuilder(
                           builder: (context, constraints) {
-                            double maxWidth = constraints.maxWidth * 0.6;
+                            double maxWidth = constraints.maxWidth * 0.8;
                             return ConstrainedBox(
                               constraints: BoxConstraints(maxWidth: maxWidth),
                               child: TextfieldInpute(
@@ -269,7 +269,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         const SizedBox(height: 10),
                         LayoutBuilder(
                           builder: (context, constraints) {
-                            double maxWidth = constraints.maxWidth * 0.4;
+                            double maxWidth = constraints.maxWidth * 0.6;
                             return ConstrainedBox(
                               constraints: BoxConstraints(maxWidth: maxWidth),
                               child: MyButton(

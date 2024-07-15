@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'prediction.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -92,6 +91,12 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
 
       if (response.statusCode == 200) {
         var predictionResult = json.decode(response.body);
+        String prediction = predictionResult['Prediction'];
+        String dietSuggestion = predictionResult['Diet Suggestion'];
+
+        String formattedResult = 'Prediction: $prediction\n';
+        formattedResult += 'Diet Suggestion: $dietSuggestion';
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PredictionScreen(predictionResult: predictionResult)),
@@ -164,6 +169,25 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
         );
       },
     );
+  }
+//delete if error pops up
+  @override
+  void dispose() {
+    _ageController.dispose();
+    _bloodPressureController.dispose();
+    _sgController.dispose();
+    _albuminController.dispose();
+    _suController.dispose();
+    _bgrController.dispose();
+    _bloodUreaController.dispose();
+    _serumCreatinineController.dispose();
+    _sodiumController.dispose();
+    _potassiumController.dispose();
+    _hemoglobinController.dispose();
+    _packedCellVolumeController.dispose();
+    _whiteBloodCellCountController.dispose();
+    _redBloodCellCountController.dispose();
+    super.dispose();
   }
 
   @override
@@ -616,6 +640,7 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
 }
 
 
+
 class PredictionScreen extends StatelessWidget {
   final dynamic predictionResult;
 
@@ -623,26 +648,46 @@ class PredictionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String prediction = predictionResult['Prediction'];
+    String dietSuggestion = predictionResult['Diet Suggestion'];
+
+    String formattedResult = '$prediction\n\n$dietSuggestion';
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Prediction Result'),
+        foregroundColor: Colors.white,
+        backgroundColor:Color.fromARGB(255, 2, 97, 142),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Status Report',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              predictionResult.toString(),
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 16.0),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color.fromARGB(255, 2, 97, 142), Color.fromARGB(255, 0, 55, 102)], // Two shades of blue gradient
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  'Status Report',
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ),
+              SizedBox(height: 24.0),
+              Center(
+                child: Text(
+                  formattedResult,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
