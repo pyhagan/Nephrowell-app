@@ -8,6 +8,8 @@ class AuthServices {
   // Instance of FirebaseAuth for authentication
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  
+
   // Signup method
   Future<String> signUpUser({
     required String username,
