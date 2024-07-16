@@ -1,4 +1,5 @@
 import 'package:ckd_mobile/Login%20SignUp/Screen/login.dart';
+import 'package:ckd_mobile/Widget/passwordRequirements.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ckd_mobile/Widget/buttons.dart';
@@ -20,6 +21,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   
+  bool hasMinLength = false;
+  bool startsWithAlphabet = false;
+  bool hasNumber = false;
+  bool hasUppercase = false;
+  bool hasSpecialCharacter = false;
+  bool notSimilarToUsername = false;
+
+  void _checkPassword(String password) {
+    setState(() {
+      hasMinLength = password.length >= 8;
+      startsWithAlphabet = RegExp(r'^[a-zA-Z]').hasMatch(password);
+      hasNumber = RegExp(r'[0-9]').hasMatch(password);
+      hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
+      hasSpecialCharacter = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+      // Check if password is not similar to username
+      notSimilarToUsername = !password.toLowerCase().contains(widget.email.toLowerCase());
+    });
+  }
 
   // Method to change the password
   Future<void> changePassword(BuildContext context) async {
@@ -108,6 +127,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             hintText: "Enter new password",
                             icon: Icons.lock,
                             isPass: true,
+                            onChanged: (value) {
+                              _checkPassword(value);
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a new password';
@@ -127,6 +149,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
                                 return 'Password must contain at least one special character';
                               }
+                              if (!notSimilarToUsername) {
+                                return 'Password cannot be similar to your email';
+                              }
                               return null;
                             },
                           ),
@@ -145,6 +170,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             hintText: "Confirm new password",
                             icon: Icons.lock,
                             isPass: true,
+                            onChanged: (value) {
+                              _checkPassword(value);
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please confirm your new password';
@@ -159,34 +187,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                   LayoutBuilder(
-                          builder: (context, constraints) {
-                            double maxWidth = constraints.maxWidth * 0.6;
-                            return ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: maxWidth),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                                  child: Text(
-                                    "* Password must be at least 8 characters\n"
-                                    "* Password must start with an alphabet\n"
-                                    "* Password must contain at least one number\n"
-                                    "* Password must contain at least one uppercase letter\n"
-                                    "* Password must contain at least one special character\n"
-                                    "* Password should not be similar to the username",
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                    const SizedBox(height: 20),
+                    
+                    // Password requirements
+                    Center(
+                      child: PasswordRequirements(
+                        hasMinLength: hasMinLength,
+                        startsWithAlphabet: startsWithAlphabet,
+                        hasNumber: hasNumber,
+                        hasUppercase: hasUppercase,
+                        hasSpecialCharacter: hasSpecialCharacter,
+                        notSimilarToUsername: notSimilarToUsername,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    
                     // Change password button
                     LayoutBuilder(
                       builder: (context, constraints) {
