@@ -5,7 +5,7 @@ import 'package:ckd_mobile/Login%20SignUp/Screen/home_Screen.dart';
 import 'package:ckd_mobile/Login%20SignUp/signup.dart';
 import 'package:ckd_mobile/Widget/buttons.dart';
 import 'package:ckd_mobile/Widget/textfield.dart';
-import 'changePassword.dart';
+//import 'changePassword.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    //double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -206,34 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                         ),
-                       /* SizedBox(height: 10),
-                        LayoutBuilder(
-                          builder: (context, constraints) {
-                            double maxWidth = constraints.maxWidth * 0.6;
-                            return ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: maxWidth),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                                  child: Text(
-                                    "* Password must be at least 8 characters\n"
-                                    "* Password must start with an alphabet\n"
-                                    "* Password must contain at least one number\n"
-                                    "* Password must contain at least one uppercase letter\n"
-                                    "* Password must contain at least one special character\n"
-                                    "* Password should not be similar to the username",
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),*/
+                       
                         GestureDetector(
                           onTap: () {
                             resetPassword(context);
@@ -245,7 +218,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Text(
                                 "Forgot Password?",
                                 style: TextStyle(
-                                  //fontWeight: FontWeight.bold,
                                   fontSize: 14,
                                   color: Colors.blue,
                                 ),
