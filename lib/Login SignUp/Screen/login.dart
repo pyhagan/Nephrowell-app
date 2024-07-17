@@ -197,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     return 'Password must contain at least one uppercase letter';
                                   }
                                   if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-                                    return 'Password must contain at least one special character';
+                                    return 'Password must contain a special character';
                                   }
                                   return null;
                                 },

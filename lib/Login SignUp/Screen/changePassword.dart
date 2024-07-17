@@ -35,7 +35,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       hasNumber = RegExp(r'[0-9]').hasMatch(password);
       hasUppercase = RegExp(r'[A-Z]').hasMatch(password);
       hasSpecialCharacter = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
-      // Check if password is not similar to username
       notSimilarToUsername = !password.toLowerCase().contains(widget.email.toLowerCase());
     });
   }
@@ -59,7 +58,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           // Navigate to the login screen
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => LoginScreen()), // Update with your login screen class
+            MaterialPageRoute(builder: (context) => LoginScreen()),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -97,7 +96,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     // Old password field
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        double maxWidth = constraints.maxWidth * 0.6;
+                        double maxWidth = constraints.maxWidth * 0.8;
                         return ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: maxWidth),
                           child: TextfieldInpute(
@@ -119,7 +118,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     // New password field
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        double maxWidth = constraints.maxWidth * 0.6;
+                        double maxWidth = constraints.maxWidth * 0.8;
                         return ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: maxWidth),
                           child: TextfieldInpute(
@@ -162,7 +161,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     // Confirm new password field
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        double maxWidth = constraints.maxWidth * 0.6;
+                        double maxWidth = constraints.maxWidth * 0.8;
                         return ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: maxWidth),
                           child: TextfieldInpute(
@@ -204,7 +203,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     // Change password button
                     LayoutBuilder(
                       builder: (context, constraints) {
-                        double maxWidth = constraints.maxWidth * 0.5;
+                        double maxWidth = constraints.maxWidth * 0.6;
                         return ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: maxWidth),
                           child: MyButton(
@@ -213,12 +212,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 changePassword(context);
                               }
                             },
-                            text: "Change Password",
+                            text: "Confirm",
+                            
                           ),
                         );
                       },
                     ),
-                    SizedBox(height: height / 10),
+                    SizedBox(height: height / 15),
                   ],
                 ),
               ),

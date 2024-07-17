@@ -21,7 +21,7 @@ class PasswordRequirements extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start, // Align requirements to the start
+      crossAxisAlignment: CrossAxisAlignment.start, 
       children: [
         PasswordRequirement(
           text: "Password must be at least 8 characters",
@@ -40,7 +40,7 @@ class PasswordRequirements extends StatelessWidget {
           isValid: hasUppercase,
         ),
         PasswordRequirement(
-          text: "Password must contain at least one special character",
+          text: "Password must contain a special character",
           isValid: hasSpecialCharacter,
         ),
         PasswordRequirement(

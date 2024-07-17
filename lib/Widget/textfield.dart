@@ -7,7 +7,7 @@ class TextfieldInpute extends StatelessWidget {
   final IconData icon;
   final Function(String)? onChanged;
   final String? Function(String?)? validator;
-  final TextStyle? hintStyle; // Add hintStyle here
+  final TextStyle? hintStyle;
 
   const TextfieldInpute({
     Key? key,
@@ -17,7 +17,7 @@ class TextfieldInpute extends StatelessWidget {
     this.onChanged,
     required this.icon,
     this.validator,
-    this.hintStyle, // Initialize hintStyle
+    this.hintStyle,
   }) : super(key: key);
 
   @override
@@ -30,13 +30,12 @@ class TextfieldInpute extends StatelessWidget {
         controller: textEditingController,
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: hintStyle ?? TextStyle(color: Colors.black45, fontSize: 14), // Apply hintStyle with fallback
+          hintStyle: hintStyle ?? TextStyle(color: Colors.black45, fontSize: 14),
           prefixIcon: Icon(
             icon,
             color: Colors.black45,
           ),
           contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-          border: InputBorder.none,
           filled: true,
           fillColor: const Color(0xFFedf0f8),
           enabledBorder: OutlineInputBorder(
@@ -47,6 +46,20 @@ class TextfieldInpute extends StatelessWidget {
             borderSide: const BorderSide(
               width: 2,
               color: Colors.blue,
+            ),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              width: 1,
+              color: Colors.red,
+            ),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              width: 1,
+              color: Colors.red,
             ),
             borderRadius: BorderRadius.circular(30),
           ),

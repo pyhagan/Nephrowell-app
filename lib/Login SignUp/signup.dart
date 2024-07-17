@@ -173,7 +173,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return 'Password must contain at least one uppercase letter';
     }
     if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
-      return 'Password must contain at least one special character';
+      return 'Password must contain a special character';
     }
     if (value.contains(usernameController.text)) {
       return 'Password should not be similar to the username';
