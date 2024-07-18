@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:printing/printing.dart';
 
 class CKDAssessmentScreen extends StatefulWidget {
   @override
@@ -48,6 +54,8 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
     }
   }
 
+  
+
   Future<void> _assessStatus() async {
     if (!_validateInputs()) {
       return;
@@ -78,10 +86,13 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
       'pe': _encodeValue(_selectedPedalEdema),
       'ane': _encodeValue(_selectedAnemia),
     };
+   
+
     var body = json.encode(data);
     print('Data being sent to the API: $body');
 
     var url = Uri.parse('https://flask-traditional-api.onrender.com/predict'); // Replace with your Flask API endpoint
+  //var url = Uri.parse('https://new-api-loas.onrender.com/predict'); 
     try {
       var response = await http.post(
         url,
@@ -171,6 +182,53 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
     );
   }
 //delete if error pops up
+
+ Future<void> _saveAsPdf() async {
+    final pdf = pw.Document();
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) =>
+           pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text('Age: ${_ageController.text}'),
+              pw.Text('Diastolic Blood Pressure: ${_bloodPressureController.text}'),
+              pw.Text('Specific Gravity: ${_sgController.text}'),
+              pw.Text('Albumin: ${_albuminController.text}'),
+              pw.Text('Sugar: ${_suController.text}'),
+              pw.Text('Blood Glucose Random: ${_bgrController.text}'),
+              pw.Text('Blood Urea: ${_bloodUreaController.text}'),
+              pw.Text('Serum Creatinine: ${_serumCreatinineController.text}'),
+              pw.Text('Sodium: ${_sodiumController.text}'),
+              pw.Text('Potassium: ${_potassiumController.text}'),
+              pw.Text('Hemoglobin: ${_hemoglobinController.text}'),
+              pw.Text('Packed Cell Volume: ${_packedCellVolumeController.text}'),
+              pw.Text('White Blood Cell Count: ${_whiteBloodCellCountController.text}'),
+              pw.Text('Red Blood Cell Count: ${_redBloodCellCountController.text}'),
+              pw.Text('Red Blood Cells: $_selectedRedBloodCells'),
+              pw.Text('Pus Cell: $_selectedPusCell'),
+              pw.Text('Pus Cell Clumps: $_selectedPusCellClumps'),
+              pw.Text('Bacteria: $_selectedBacteria'),
+              pw.Text('Hypertension: $_selectedHypertension'),
+              pw.Text('Diabetes: $_selectedDiabetes'),
+              pw.Text('Coronary Artery Disease: $_selectedCoronaryArteryDisease'),
+              pw.Text('Pedal Edema: $_selectedPedalEdema'),
+              pw.Text('Anemia: $_selectedAnemia'),
+            ],
+          ),
+      ),
+    );
+
+    final output = await getTemporaryDirectory();
+    final file = File('${output.path}/medical information.pdf');
+    await file.writeAsBytes(await pdf.save());
+
+    Printing.sharePdf(bytes: await pdf.save(), filename: 'medical information.pdf');
+  }
+
+   
+
+
   @override
   void dispose() {
     _ageController.dispose();
@@ -199,6 +257,12 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
           'Medical Information',
           style: TextStyle(color: Colors.white),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: _saveAsPdf,
+          ),
+        ],
       ),
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
@@ -644,52 +708,89 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
 class PredictionScreen extends StatelessWidget {
   final dynamic predictionResult;
 
-  PredictionScreen({Key? key, required this.predictionResult}) : super(key: key);
+  PredictionScreen({required this.predictionResult});
 
   @override
   Widget build(BuildContext context) {
     String prediction = predictionResult['Prediction'];
     String dietSuggestion = predictionResult['Diet Suggestion'];
 
-    String formattedResult = '$prediction\n\n$dietSuggestion';
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Prediction Result'),
-        foregroundColor: Colors.white,
-        backgroundColor:Color.fromARGB(255, 2, 97, 142),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () {
+              _createPdfAndSave(context, prediction, dietSuggestion);
+            },
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
+            colors: [const Color.fromARGB(255, 8, 71, 144), Color.fromARGB(172, 5, 63, 111)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color.fromARGB(255, 2, 97, 142), Color.fromARGB(255, 0, 55, 102)], // Two shades of blue gradient
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: Text(
-                  'Status Report',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Prediction',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
-              ),
-              SizedBox(height: 24.0),
-              Center(
-                child: Text(
-                  formattedResult,
+                SizedBox(height: 8),
+                Text(
+                  prediction,
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
-              ),
-            ],
+                SizedBox(height: 16),
+                Text(
+                  'Diet Suggestion',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  dietSuggestion,
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _createPdfAndSave(BuildContext context, String prediction, String dietSuggestion) async {
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text('Prediction', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+              pw.Text(prediction, style: pw.TextStyle(fontSize: 18)),
+              pw.SizedBox(height: 16),
+              pw.Text('Diet Suggestion', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+              pw.Text(dietSuggestion, style: pw.TextStyle(fontSize: 18)),
+            ],
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
   }
 }
