@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:printing/printing.dart';
 
+
 class CKDAssessmentScreen extends StatefulWidget {
   @override
   _CKDAssessmentScreenState createState() => _CKDAssessmentScreenState();
@@ -54,8 +55,6 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
     }
   }
 
-  
-
   Future<void> _assessStatus() async {
     if (!_validateInputs()) {
       return;
@@ -86,13 +85,11 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
       'pe': _encodeValue(_selectedPedalEdema),
       'ane': _encodeValue(_selectedAnemia),
     };
-   
 
     var body = json.encode(data);
     print('Data being sent to the API: $body');
 
-    var url = Uri.parse('https://flask-traditional-api.onrender.com/predict'); // Replace with your Flask API endpoint
-  //var url = Uri.parse('https://new-api-loas.onrender.com/predict'); 
+    var url = Uri.parse('https://new-api-loas.onrender.com/predict');
     try {
       var response = await http.post(
         url,
@@ -181,72 +178,7 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
       },
     );
   }
-//delete if error pops up
 
- Future<void> _saveAsPdf() async {
-    final pdf = pw.Document();
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) =>
-           pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text('Age: ${_ageController.text}'),
-              pw.Text('Diastolic Blood Pressure: ${_bloodPressureController.text}'),
-              pw.Text('Specific Gravity: ${_sgController.text}'),
-              pw.Text('Albumin: ${_albuminController.text}'),
-              pw.Text('Sugar: ${_suController.text}'),
-              pw.Text('Blood Glucose Random: ${_bgrController.text}'),
-              pw.Text('Blood Urea: ${_bloodUreaController.text}'),
-              pw.Text('Serum Creatinine: ${_serumCreatinineController.text}'),
-              pw.Text('Sodium: ${_sodiumController.text}'),
-              pw.Text('Potassium: ${_potassiumController.text}'),
-              pw.Text('Hemoglobin: ${_hemoglobinController.text}'),
-              pw.Text('Packed Cell Volume: ${_packedCellVolumeController.text}'),
-              pw.Text('White Blood Cell Count: ${_whiteBloodCellCountController.text}'),
-              pw.Text('Red Blood Cell Count: ${_redBloodCellCountController.text}'),
-              pw.Text('Red Blood Cells: $_selectedRedBloodCells'),
-              pw.Text('Pus Cell: $_selectedPusCell'),
-              pw.Text('Pus Cell Clumps: $_selectedPusCellClumps'),
-              pw.Text('Bacteria: $_selectedBacteria'),
-              pw.Text('Hypertension: $_selectedHypertension'),
-              pw.Text('Diabetes: $_selectedDiabetes'),
-              pw.Text('Coronary Artery Disease: $_selectedCoronaryArteryDisease'),
-              pw.Text('Pedal Edema: $_selectedPedalEdema'),
-              pw.Text('Anemia: $_selectedAnemia'),
-            ],
-          ),
-      ),
-    );
-
-    final output = await getTemporaryDirectory();
-    final file = File('${output.path}/medical information.pdf');
-    await file.writeAsBytes(await pdf.save());
-
-    Printing.sharePdf(bytes: await pdf.save(), filename: 'medical information.pdf');
-  }
-
-   
-
-
-  @override
-  void dispose() {
-    _ageController.dispose();
-    _bloodPressureController.dispose();
-    _sgController.dispose();
-    _albuminController.dispose();
-    _suController.dispose();
-    _bgrController.dispose();
-    _bloodUreaController.dispose();
-    _serumCreatinineController.dispose();
-    _sodiumController.dispose();
-    _potassiumController.dispose();
-    _hemoglobinController.dispose();
-    _packedCellVolumeController.dispose();
-    _whiteBloodCellCountController.dispose();
-    _redBloodCellCountController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -257,12 +189,7 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
           'Medical Information',
           style: TextStyle(color: Colors.white),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: _saveAsPdf,
-          ),
-        ],
+       
       ),
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
