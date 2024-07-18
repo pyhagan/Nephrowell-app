@@ -54,8 +54,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   
     _animationController.forward().whenComplete(() {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (_) => SignUpScreen(),
-       //builder: (_) => HomeScreen(),
+        //builder: (_) => SignUpScreen(),
+       builder: (_) => HomeScreen(),
      
       ));
     });
