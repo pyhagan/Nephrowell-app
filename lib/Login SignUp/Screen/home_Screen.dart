@@ -1,8 +1,9 @@
 
  import 'dart:ui';
+import 'package:ckd_mobile/Login%20SignUp/Screen/reports.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
+import 'package:cloud_firestore/cloud_firestore.dart'; 
 import 'package:flutter/services.dart';
 
 import 'changePassword.dart';
@@ -12,6 +13,23 @@ import 'library.dart';
 import 'login.dart';
 import 'profile.dart';
 import 'communityUI.dart';
+
+void trackAppUsage() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
+
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot userSnapshot = await transaction.get(userDoc);
+      if (userSnapshot.exists) {
+        int currentCount = (userSnapshot.data() as Map<String, dynamic>)['appUsageCount'] ?? 0;
+        transaction.update(userDoc, {'appUsageCount': currentCount + 1});
+      } else {
+        transaction.set(userDoc, {'appUsageCount': 1});
+      }
+    });
+  }
+}
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -25,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _fetchUserData();
+      trackAppUsage();
   }
 
   Future<void> _fetchUserData() async {
@@ -58,12 +77,11 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Text(
             'NephroWell',
             style: TextStyle(
-              color: Colors.blue, // Make the text blue
-              fontSize: 20, // Adjust font size if needed
+              color: Colors.blue,
+              fontSize: 20, 
             ),
           ),
-          backgroundColor: Colors.white, // Background color of the app bar
-          elevation: 4, // Elevation of the app bar
+          backgroundColor: Colors.white, 
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           actions: [
             IconButton(
@@ -182,9 +200,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: Text('Feedback'),
                     ),
                   ),
-                  
-                  const PopupMenuItem<int>(
+                   const PopupMenuItem<int>(
                     value: 4,
+                    child: ListTile(
+                      leading: Icon(Icons.bar_chart),
+                      title: Text('Reports'), 
+                    ),
+                  ),
+                  const PopupMenuItem<int>(
+                    value: 5,
                     child: ListTile(
                       leading: Icon(Icons.logout),
                       title: Text('Logout'),
@@ -224,7 +248,13 @@ class _HomeScreenState extends State<HomeScreen> {
         case 3:
     _showFeedbackDialog(context); // Show feedback dialog
       break;
-      case 4:
+       case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ReportsScreen()),
+        );
+        break;
+      case 5:
         _showLogoutDialog(context);
         break;
        
@@ -249,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 10),
               Text(
-                "Our goal is to empower you with knowledge and tools to take control of your kidney health.",
+                "Our goal is to empower you with knowledge to take control of your kidney health.",
                 style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.justify,
               ),
@@ -328,9 +358,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showFeedbackDialog(BuildContext context) {
+ void _showFeedbackDialog(BuildContext context) {
   TextEditingController feedbackController = TextEditingController(); // Controller to get feedback input
-  
+
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -370,11 +400,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 try {
                   User? user = FirebaseAuth.instance.currentUser;
                   if (user != null) {
+                    // Add feedback to Firestore
                     await FirebaseFirestore.instance.collection('feedback').add({
                       'userId': user.uid,
                       'feedback': feedback,
                       'timestamp': FieldValue.serverTimestamp(),
                     });
+
+                    // Update feedback count in user's document
+                    DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
+                    FirebaseFirestore.instance.runTransaction((transaction) async {
+                      DocumentSnapshot userSnapshot = await transaction.get(userDoc);
+                      int currentCount = (userSnapshot.data() as Map<String, dynamic>)['feedbackCount'] ?? 0;
+                      transaction.update(userDoc, {'feedbackCount': currentCount + 1});
+                    });
+
                     Navigator.of(context).pop(); // Close the dialog
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Thank you for your feedback!')),
@@ -402,6 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
     },
   );
 }
+
 
 
   void _showLogoutDialog(BuildContext context) {
@@ -439,6 +480,6 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(builder: (context) => const LoginScreen()),
       (route) => false, // Prevents user from going back to HomeScreen
     );
-    // Perform any additional logout actions if needed
+    
   }
 }

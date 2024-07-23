@@ -150,7 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (RegExp(r'^[0-9]').hasMatch(value)) {
       return 'Email cannot start with a number';
     }
-    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)$').hasMatch(value)) {
+    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|icloud\.com)$').hasMatch(value)) {
       return 'Please enter a valid email address (gmail.com, yahoo.com, outlook.com)';
     }
     return null;
@@ -184,7 +184,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Colors.white,

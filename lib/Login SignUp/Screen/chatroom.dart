@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart'; // Add this import for date formatting
+import 'package:intl/intl.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   final String communityId;
@@ -66,16 +66,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   void _editMessage(DocumentSnapshot messageSnapshot) {
-    // Implement editing message functionality here
     String currentMessage = messageSnapshot['text'];
-    // Set _messageController text to currentMessage for editing
     _messageController.text = currentMessage;
     // Delete original message after editing
     _deleteMessage(messageSnapshot);
   }
 
   void _deleteMessage(DocumentSnapshot messageSnapshot) async {
-    // Implement deleting message functionality here
     await FirebaseFirestore.instance
         .collection('chatRooms')
         .doc(widget.communityId)
@@ -88,7 +85,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Chat Room')), // Center the text "Chat Room"
+        title: Center(child: Text('Chat Room')),
         backgroundColor: Color.fromARGB(255, 0, 55, 102), // Set app bar background color
         foregroundColor: Colors.white, // Set app bar text color
       ),
@@ -188,17 +185,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    style: TextStyle(color: Colors.white), // Set input text color to white
+                    style: TextStyle(color: Colors.white), 
                     decoration: InputDecoration(
                       labelText: 'Send a message...',
-                      labelStyle: TextStyle(color: Colors.white), // Set label text color to white
+                      labelStyle: TextStyle(color: Colors.white), 
                       hintText: 'Type your message here...',
-                      hintStyle: TextStyle(color: Colors.white70), // Set hint text color to white
+                      hintStyle: TextStyle(color: Colors.white70), 
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white), // Set border color to white
+                        borderSide: BorderSide(color: Colors.white), 
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white), // Set focused border color to white
+                        borderSide: BorderSide(color: Colors.white), 
                       ),
                     ),
                   ),

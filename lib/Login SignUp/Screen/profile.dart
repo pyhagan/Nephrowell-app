@@ -131,8 +131,8 @@ class _ProfilePageState extends State<ProfilePage> {
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white
+        backgroundColor: Colors.grey,
+        foregroundColor: Colors.black,
       ),
       child: const Text("Logout"),
     );
