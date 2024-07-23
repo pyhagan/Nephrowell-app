@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ckd_mobile/Login%20SignUp/Screen/login.dart';
 
 class EditProfilePage extends StatefulWidget {
   final double height;
@@ -75,7 +74,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (RegExp(r'^[0-9]').hasMatch(value)) {
       return 'Email cannot start with a number';
     }
-    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com)$').hasMatch(value)) {
+    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|outlook\.com|icloud\.com)$').hasMatch(value)) {
       return 'Please enter a valid email address (gmail.com, yahoo.com, outlook.com)';
     }
     return null;

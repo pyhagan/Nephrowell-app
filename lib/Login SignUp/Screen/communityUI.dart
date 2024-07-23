@@ -1,8 +1,7 @@
 import 'package:ckd_mobile/Login%20SignUp/Screen/chatroom.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ckd_mobile/Login%20SignUp/Services/collections.dart';
-import 'package:collection/collection.dart';
+
 
 // Define your Firestore collections
 final CollectionReference<Map<String, dynamic>> communitiesCollection = FirebaseFirestore.instance.collection('communities');
@@ -74,7 +73,7 @@ class CommunityScreen extends StatelessWidget {
     }
 
     // Check if authenticated user's username is already a member
-    String username = ''; // Replace with authenticated user's username
+    String username = ''; 
     bool userAlreadyMember = isUserMember(username, currentMembers);
 
     if (!userAlreadyMember) {
@@ -113,7 +112,6 @@ class CommunityScreen extends StatelessWidget {
         },
       );
     } else {
-      // User is already a member, navigate directly to chat room
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ChatRoomScreen(communityId, username)),
@@ -155,7 +153,7 @@ class CommunityScreen extends StatelessWidget {
               onPressed: () {
                 String name = nameController.text.trim();
                 String description = descriptionController.text.trim();
-                String username = ''; // Replace with authenticated user's username
+                String username = '';
                 if (name.isNotEmpty && description.isNotEmpty) {
                   createCommunity(name, description, username);
                   Navigator.of(context).pop();
@@ -203,10 +201,10 @@ Future<void> joinCommunity(String communityId, String username) async {
     await communitiesCollection.doc(communityId).update({
       'members': FieldValue.arrayUnion([username]),
     });
-    // Optionally update local state or notify user
+   
   } catch (e) {
     print('Error joining community: $e');
-    // Handle error appropriately
+  
   }
 }
 
@@ -215,12 +213,12 @@ Future<void> createCommunity(String name, String description, String username) a
     DocumentReference<Map<String, dynamic>> newCommunityRef = await communitiesCollection.add({
       'name': name,
       'description': description,
-      'members': [username], // Add creator as first member
+      'members': [username],
     });
     await membersCollection.doc(newCommunityRef.id).set({
       'members': [username],
     });
-    // Optionally navigate to new community or show success message
+    
   } catch (e) {
     print('Error creating community: $e');
     // Handle error appropriately
