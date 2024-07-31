@@ -1,5 +1,4 @@
-
- import 'dart:ui';
+import 'dart:ui';
 import 'package:ckd_mobile/Login%20SignUp/Screen/reports.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,8 +10,9 @@ import 'editprofile.dart';
 import 'info.dart';
 import 'library.dart';
 import 'login.dart';
-import 'profile.dart';
+import 'personalData.dart';
 import 'communityUI.dart';
+import 'settings.dart';  // Import the settings screen
 
 void trackAppUsage() async {
   User? user = FirebaseAuth.instance.currentUser;
@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _fetchUserData();
-      trackAppUsage();
+    trackAppUsage();
   }
 
   Future<void> _fetchUserData() async {
@@ -78,15 +78,15 @@ class _HomeScreenState extends State<HomeScreen> {
             'NephroWell',
             style: TextStyle(
               color: Colors.blue,
-              fontSize: 20, 
+              fontSize: 20,
             ),
           ),
-          backgroundColor: Colors.white, 
+          backgroundColor: Colors.white,
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           actions: [
             IconButton(
-              icon: Icon(Icons.chat), 
-              tooltip: 'Chat',// Add a chat icon
+              icon: Icon(Icons.chat),
+              tooltip: 'Chat',
               onPressed: () {
                 Navigator.push(
                   context,
@@ -94,13 +94,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            
           ],
         ),
         body: Stack(
           fit: StackFit.expand,
           children: [
-            // Background image
             Image.asset(
               'images/background2.jpeg',
               fit: BoxFit.cover,
@@ -111,7 +109,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.black.withOpacity(0.2),
               ),
             ),
-            // Foreground content
             Column(
               children: [
                 Expanded(
@@ -172,53 +169,9 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.library_books),
               label: 'Library',
             ),
-            BottomNavigationBarItem(
-              icon: PopupMenuButton<int>(
-                icon: const Icon(Icons.settings), 
-                onSelected: (int value) {
-                  _handleMenuSelection(context, value);
-                },
-                itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                  const PopupMenuItem<int>(
-                    value: 1,
-                    child: ListTile(
-                      leading: Icon(Icons.account_circle),
-                      title: Text('Account'),
-                    ),
-                  ),
-                  const PopupMenuItem<int>(
-                    value: 2,
-                    child: ListTile(
-                      leading: Icon(Icons.info),
-                      title: Text('About'),
-                    ),
-                  ),
-                  const PopupMenuItem<int>(
-                    value: 3,
-                    child: ListTile(
-                      leading: Icon(Icons.feedback),
-                      title: Text('Feedback'),
-                    ),
-                  ),
-                   const PopupMenuItem<int>(
-                    value: 4,
-                    child: ListTile(
-                      leading: Icon(Icons.bar_chart),
-                      title: Text('Reports'), 
-                    ),
-                  ),
-                  const PopupMenuItem<int>(
-                    value: 5,
-                    child: ListTile(
-                      leading: Icon(Icons.logout),
-                      title: Text('Logout'),
-                    ),
-                  ),
-                 
-                  
-                ],
-              ),
-              label: 'Settings', // Update the label
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
             ),
           ],
           onTap: (int index) {
@@ -229,257 +182,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   MaterialPageRoute(builder: (context) => LibraryScreen()),
                 );
                 break;
-              // The case for the settings menu is handled by the PopupMenuButton
+              case 2:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsScreen()),
+                );
+                break;
             }
           },
         ),
       ),
     );
-  }
-
-  void _handleMenuSelection(BuildContext context, int value) {
-    switch (value) {
-      case 1:
-        _showAccountOptions(context);
-        break;
-      case 2:
-        _showAboutDialog(context);
-        break;
-        case 3:
-    _showFeedbackDialog(context); // Show feedback dialog
-      break;
-       case 4:
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ReportsScreen()),
-        );
-        break;
-      case 5:
-        _showLogoutDialog(context);
-        break;
-       
-    }
-  }
-
-  void _showAboutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('About NephroWell'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                "NephroWell is an app designed to help you monitor and understand your kidney health. "
-                "With this app, you can assess your Chronic Kidney Disease (CKD) status, access a comprehensive library of information, "
-                "and manage your personal health records.",
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.justify,
-              ),
-              SizedBox(height: 10),
-              Text(
-                "Our goal is to empower you with knowledge to take control of your kidney health.",
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.justify,
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showAccountOptions(BuildContext context) {
-    final RenderBox button = context.findRenderObject() as RenderBox;
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
-
-    showMenu(
-      context: context,
-      position: RelativeRect.fromRect(
-        Rect.fromPoints(
-          button.localToGlobal(Offset.zero, ancestor: overlay),
-          button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
-        ),
-        Offset.zero & overlay.size,
-      ),
-      items: <PopupMenuEntry<int>>[
-        PopupMenuItem<int>(
-          value: 1,
-          child: ListTile(
-            leading: Icon(Icons.person),
-            title: Text('View Profile'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfilePage(MediaQuery.of(context).size.height, MediaQuery.of(context).size.width)),
-              );
-            },
-          ),
-        ),
-        PopupMenuItem<int>(
-          value: 2,
-          child: ListTile(
-            leading: Icon(Icons.edit),
-            title: Text('Edit Profile'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => EditProfilePage(MediaQuery.of(context).size.height, MediaQuery.of(context).size.width)),
-              );
-            },
-          ),
-        ),
-        PopupMenuItem<int>(
-          value: 3,
-          child: ListTile(
-            leading: Icon(Icons.lock),
-            title: Text('Change Password'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChangePasswordScreen(email: FirebaseAuth.instance.currentUser!.email!)),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
- void _showFeedbackDialog(BuildContext context) {
-  TextEditingController feedbackController = TextEditingController(); // Controller to get feedback input
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Provide Feedback'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              'We value your feedback! Please let us know how we can improve your experience with NephroWell.',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.justify,
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: feedbackController,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Enter your feedback here...',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ],
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Submit'),
-            onPressed: () async {
-              String feedback = feedbackController.text.trim();
-              if (feedback.isNotEmpty) {
-                try {
-                  User? user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    // Add feedback to Firestore
-                    await FirebaseFirestore.instance.collection('feedback').add({
-                      'userId': user.uid,
-                      'feedback': feedback,
-                      'timestamp': FieldValue.serverTimestamp(),
-                    });
-
-                    // Update feedback count in user's document
-                    DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
-                    FirebaseFirestore.instance.runTransaction((transaction) async {
-                      DocumentSnapshot userSnapshot = await transaction.get(userDoc);
-                      int currentCount = (userSnapshot.data() as Map<String, dynamic>)['feedbackCount'] ?? 0;
-                      transaction.update(userDoc, {'feedbackCount': currentCount + 1});
-                    });
-
-                    Navigator.of(context).pop(); // Close the dialog
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Thank you for your feedback!')),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('User not logged in. Please log in to provide feedback.')),
-                    );
-                  }
-                } catch (e) {
-                  print('Error submitting feedback: $e');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to submit feedback. Please try again later.')),
-                  );
-                }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please provide your feedback before submitting.')),
-                );
-              }
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
-
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Logout'),
-          content: const Text('Are you sure you want to logout?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-            ),
-            TextButton(
-              child: const Text('Yes'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                _handleLogout(context); //logout action
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  
-
-  void _handleLogout(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-      (route) => false, // Prevents user from going back to HomeScreen
-    );
-    
   }
 }

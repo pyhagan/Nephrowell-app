@@ -20,25 +20,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
-  }
-
-  Future<void> _fetchUserData() async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        DocumentSnapshot<Map<String, dynamic>> userDoc =
-            await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-        if (userDoc.exists) {
-          setState(() {
-            usernameController = TextEditingController(text: userDoc.data()?['username'] ?? '');
-            emailController = TextEditingController(text: userDoc.data()?['email'] ?? '');
-          });
-        }
-      }
-    } catch (e) {
-      print('Error fetching user data: $e');
-    }
+    usernameController = TextEditingController();
+    emailController = TextEditingController();
   }
 
   @override
@@ -46,6 +29,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
     usernameController.dispose();
     emailController.dispose();
     super.dispose();
+  }
+
+  Future<Map<String, dynamic>?> _fetchUserData() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        DocumentSnapshot<Map<String, dynamic>> userDoc =
+            await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          return userDoc.data();
+        }
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+    return null;
   }
 
   String? usernameValidator(String? value) {
@@ -84,10 +83,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       title: const Text('Edit Profile'),
-        backgroundColor: Colors.blue,
+       title:  Center(child: Text('Edit Profile')),
+       backgroundColor: const Color.fromARGB(255, 12, 119, 207),
+       foregroundColor: Colors.white,
+        
       ),
-      body: _editProfilePageUI(context),
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: _fetchUserData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            final userData = snapshot.data;
+            usernameController.text = userData?['username'] ?? '';
+            emailController.text = userData?['email'] ?? '';
+            return _editProfilePageUI(context);
+          } else {
+            return Center(child: Text('No user data found'));
+          }
+        },
+      ),
     );
   }
 
@@ -103,7 +120,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             _userImageWidget("images/avatar.jpeg"),
             const SizedBox(height: 20),
             TextFormField(
-              
               controller: usernameController,
               decoration: InputDecoration(
                 hintText: 'Enter your username',

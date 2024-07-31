@@ -7,7 +7,7 @@ class ReportsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('NephroWell Reports'),
+        title: Center(child:Text('NephroWell Reports'),) 
       ),
       body: Container(
         width: double.infinity,

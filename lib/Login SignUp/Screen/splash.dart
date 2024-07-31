@@ -1,4 +1,5 @@
 
+import 'package:ckd_mobile/Login%20SignUp/Screen/home_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ckd_mobile/Login%20SignUp/signup.dart';
@@ -54,8 +55,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   
     _animationController.forward().whenComplete(() {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (_) => SignUpScreen(),
-      //builder: (_) => HomeScreen(),
+        //builder: (_) => SignUpScreen(),
+      builder: (_) => HomeScreen(),
      
       ));
     });
