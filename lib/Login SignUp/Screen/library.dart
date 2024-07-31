@@ -1,13 +1,47 @@
+import 'package:ckd_mobile/Login%20SignUp/Screen/home_Screen.dart';
+import 'package:ckd_mobile/Login%20SignUp/Screen/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class LibraryScreen extends StatelessWidget {
+class LibraryScreen extends StatefulWidget {
+  @override
+  _LibraryScreenState createState() => _LibraryScreenState();
+}
+
+class _LibraryScreenState extends State<LibraryScreen> {
+  int _selectedIndex = 1; // Set default index to Library
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()), // Ensure HomeScreen is imported
+        );
+        break;
+      case 1:
+        // Already on LibraryScreen
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SettingsScreen()), // Ensure SettingsScreen is imported
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text('Library'),
+        title: Center(child: Text('Library')),
+        backgroundColor: const Color.fromARGB(255, 12, 119, 207),
+        foregroundColor: Colors.white,
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -125,38 +159,58 @@ class LibraryScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   ListTile(
-  leading: Icon(Icons.article),
-  title: Text('Understanding Chronic Kidney Disease'),
-  subtitle: Text('Published by: National Kidney Foundation'),
-  onTap: () {
-    launchURL('https://www.kidney.org/atoz/content/about-chronic-kidney-disease');
-  },
-),
-ListTile(
-  leading: Icon(Icons.article),
-  title: Text('The Importance of Kidney Health'),
-  subtitle: Text('Published by: Canada Kidney Foundation'),
-  onTap: () {
-    launchURL('https://kidney.ca/Kidney-Health/Your-Kidneys/Why-Kidneys-are-so-Important');
-  },
-),
-ListTile(
-  leading: Icon(Icons.article),
-  title: Text('American Kidney Fund'),
-  onTap: () {
-    launchURL('https://www.bing.com/ck/a?!&&p=dcddc7511ef6eb8bJmltdHM9MTcyMTA4ODAwMCZpZ3VpZD0wNDQyZjQyZi1mZjYxLTY0MGUtMjIzMS1lMDVlZmVmZjY1ZjcmaW5zaWQ9NTIwMA&ptn=3&ver=2&hsh=3&fclid=0442f42f-ff61-640e-2231-e05efeff65f7&psq=american+kidney+fund&u=a1aHR0cHM6Ly93d3cua2lkbmV5ZnVuZC5vcmcv&ntb=1');
-  },
-),
-
+                    leading: Icon(Icons.article),
+                    title: Text('Understanding Chronic Kidney Disease'),
+                    subtitle: Text('Published by: National Kidney Foundation'),
+                    onTap: () {
+                      launchURL('https://www.kidney.org/atoz/content/about-chronic-kidney-disease');
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.article),
+                    title: Text('The Importance of Kidney Health'),
+                    subtitle: Text('Published by: Canada Kidney Foundation'),
+                    onTap: () {
+                      launchURL('https://kidney.ca/Kidney-Health/Your-Kidneys/Why-Kidneys-are-so-Important');
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.article),
+                    title: Text('American Kidney Fund'),
+                    onTap: () {
+                      launchURL('https://www.bing.com/ck/a?!&&p=dcddc7511ef6eb8bJmltdHM9MTcyMTA4ODAwMCZpZ3VpZD0wNDQyZjQyZi1mZjYxLTY0MGUtMjIzMS1lMDVlZmVmZjY1ZjcmaW5zaWQ9NTIwMA&ptn=3&ver=2&hsh=3&fclid=0442f42f-ff61-640e-2231-e05efeff65f7&psq=american+kidney+fund&u=a1aHR0cHM6Ly93d3cua2lkbmV5ZnVuZC5vcmcv&ntb=1');
+                    },
+                  ),
                 ],
               ),
             ),
           );
         },
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.library_books),
+            label: 'Library',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        onTap: _onItemTapped,
+      ),
     );
   }
 }
+
+
+
 Future<void> launchURL(String url) async {
   if (await canLaunch(url)) {
     await launch(url);

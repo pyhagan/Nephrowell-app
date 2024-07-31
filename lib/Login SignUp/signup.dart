@@ -25,6 +25,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool hasUppercase = false;
   bool hasSpecialCharacter = false;
   bool notSimilarToUsername = false;
+  bool isLoading = false;
 
   void _checkPassword(String password) {
     setState(() {
@@ -45,6 +46,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String password = passwordController.text.trim();
 
    try {
+    setState((){
+      isLoading=true;
+    });
       // Check if username is already in use
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('users')

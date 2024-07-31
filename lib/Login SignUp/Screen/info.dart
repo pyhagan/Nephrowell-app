@@ -180,11 +180,11 @@ class _CKDAssessmentScreenState extends State<CKDAssessmentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text(
+        backgroundColor: const Color.fromARGB(255, 12, 119, 207),
+        title: Center(child:Text(
           'Medical Information',
           style: TextStyle(color: Colors.white),
-        ),
+        ),),
        
       ),
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
